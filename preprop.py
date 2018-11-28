@@ -48,3 +48,29 @@ def genNgram(file, N=1):
                 n_gram_list.append(curr_line_tokenlist)
 
     return n_gram_list
+
+def ngram2embedded(ngram, w2vmodel):
+    # convert alphabetical ngram into numerical ngram
+    ngram_embedded = []
+    for name in ngram:
+        buffer = []
+        for gram in name:
+            buffer.append(w2vmodel.wv[gram])
+        ngram_embedded.append(buffer)
+    return ngram_embedded
+
+def ngram2padded(ngram, max_timestep):
+    '''
+    pad every entry in a gram to its max length  with 0s
+    note 0s are 0 vectors
+    eg: embed dim=3, current gram timestep=1, pad to timestep 3
+    [ [x,y,z], [0,0,0], [0,0,0]  ]
+    '''
+    emb_dimension = len(ngram[0][0])
+    pad_vec = np.array(emb_dimension*[0.0], dtype=np.float32)
+    ngram_padded = []
+    for grams in ngram:
+        buffer = [grams[itr] if itr<len(grams) else pad_vec for itr in range(max_timestep)]
+        ngram_padded.append(buffer)
+    ngram_padded = np.array(ngram_padded)
+    return ngram_padded

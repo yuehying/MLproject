@@ -25,10 +25,11 @@ def write_accuracy_output(accuracy, filename):
 def write_pred_output(predicted, filename='pred.csv'):
     entry_cnt = 0
     with open(filename, 'w') as file:
+        file.write('Id,IsBrazilian\n')
         for pred in predicted:
-            entry_cnt = entry_cnt + 1
-            if entry_cnt == len(predicted):
-                towrite = str(pred)
+            if entry_cnt+1 == len(predicted):
+                towrite = str(entry_cnt) +',' + str(pred)
             else:
-                towrite = str(pred) + '\n'
+                towrite = str(entry_cnt) +',' +str(pred) + '\n'
+            entry_cnt = entry_cnt + 1
             file.write(towrite)
